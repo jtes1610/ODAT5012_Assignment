@@ -1,0 +1,24 @@
+---
+title: "EDA"
+format: html
+editor: visual
+---
+
+```{r}
+library(jsonlite)
+
+# Fetch the data
+child_mortality <- read.csv("https://ourworldindata.org/grapher/child-mortality.csv?v=1&csvType=full&useColumnShortNames=true")
+
+# Fetch the metadata
+metadata1 <- fromJSON("https://ourworldindata.org/grapher/child-mortality.metadata.json?v=1&csvType=full&useColumnShortNames=true")
+```
+
+```{r}
+# Fetch the data
+life_expectancy <- read.csv("https://ourworldindata.org/grapher/life-expectancy.csv?v=1&csvType=full&useColumnShortNames=true")
+
+# Fetch the metadata
+metadata2 <- fromJSON("https://ourworldindata.org/grapher/life-expectancy.metadata.json?v=1&csvType=full&useColumnShortNames=true")
+```
+
