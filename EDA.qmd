@@ -172,4 +172,12 @@ rsconnect::setAccountInfo(name='jtes1610',
 ```{r}
 rsconnect::deployApp(appDir = "app", appName = "child-pneumonia-article")
 ```
+```{r}
+library(jsonlite)
+
+# Fetch the data
+gdp_percap <- read.csv("https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv?v=1&csvType=full&useColumnShortNames=true")
+
+
+```
 
