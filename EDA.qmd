@@ -6,7 +6,12 @@ editor: visual
 
 ```{r}
 library(jsonlite)
+library(tidyverse)
+library(dplyr)
+```
 
+
+```{r}
 # Fetch the data
 child_mortality <- read.csv("https://ourworldindata.org/grapher/child-mortality.csv?v=1&csvType=full&useColumnShortNames=true")
 
@@ -14,11 +19,157 @@ child_mortality <- read.csv("https://ourworldindata.org/grapher/child-mortality.
 metadata1 <- fromJSON("https://ourworldindata.org/grapher/child-mortality.metadata.json?v=1&csvType=full&useColumnShortNames=true")
 ```
 
+
+
 ```{r}
 # Fetch the data
 life_expectancy <- read.csv("https://ourworldindata.org/grapher/life-expectancy.csv?v=1&csvType=full&useColumnShortNames=true")
 
 # Fetch the metadata
 metadata2 <- fromJSON("https://ourworldindata.org/grapher/life-expectancy.metadata.json?v=1&csvType=full&useColumnShortNames=true")
+```
+
+```{r}
+cp <- read.csv("C:/Users/tesso/Documents/ODAT5012_Assignment/child_pnem1.csv")
+```
+
+```{r}
+# Define groups
+health_system <- c("Advanced Health System", "Basic Health System", 
+                   "Limited Health System", "Minimal Health System")
+
+wb_region <- c("East Asia & Pacific - WB", "Europe & Central Asia - WB", 
+               "Latin America & Caribbean - WB", "Middle East & North Africa - WB", 
+               "North America", "South Asia - WB", "Sub-Saharan Africa - WB")
+
+who_region <- c("African Region", "Eastern Mediterranean Region", "European Region", 
+                "Region of the Americas", "South-East Asia Region", "Western Pacific Region")
+
+four_world <- c("Africa", "America", "Asia", "Europe")
+
+sdi_group <- c("Low SDI", "Low-middle SDI", "Middle SDI", "High-middle SDI", "High SDI")
+```
+
+
+```{r}
+glimpse(cp)
+```
+```{r}
+cp_wide <- cp %>%
+  select(location, year, sex, metric, val) %>%
+  pivot_wider(
+    names_from = metric,
+    values_from = val
+  ) %>%
+  arrange(location, year, sex)
+```
+
+
+```{r}
+location_classification <- cp_wide %>%
+  distinct(location) %>%
+  mutate(
+    location_type = case_when(
+      location %in% health_system ~ "Health System",
+      location %in% wb_region ~ "World Bank Region",
+      location %in% who_region ~ "WHO Region",
+      location %in% four_world ~ "World Region (4)",
+      location %in% sdi_group ~ "SDI Group",
+      TRUE ~ "Country"
+    )
+  )
+
+cp_wide_classified <- cp_wide %>%
+  left_join(location_classification, by = "location")
+```
+
+```{r}
+glimpse(cp_wide_classified)
+```
+
+
+```{r}
+
+
+cod_wide <- cod %>%
+  filter(age_name == "<5 years", cause_name == "Lower respiratory infections") %>%
+  select(location_name, sex_name, year, metric_name, val) %>%
+  pivot_wider(
+    names_from = metric_name,
+    values_from = val
+  )
+```
+```{r}
+cod_year_totals <- cod %>%
+  filter(sex_name == "Both") %>%
+  group_by(year, metric_name) %>%
+  summarise(total = sum(val, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(
+    names_from = metric_name,
+    values_from = total
+  ) %>%
+  arrange(year)
+```
+
+```{r}
+location_list <- cod %>%
+  select(location_id, location_name) %>%
+  distinct() %>%
+  arrange(location_name)
+```
+
+
+```{r}
+
+# Define groups
+health_system <- c("Advanced Health System", "Basic Health System", "Limited Health System", "Minimal Health System")
+
+wb_region <- c("East Asia & Pacific - WB", "Europe & Central Asia - WB", "Latin America & Caribbean - WB",
+               "Middle East & North Africa - WB", "North America", "South Asia - WB", "Sub-Saharan Africa - WB")
+
+who_region <- c("African Region", "Eastern Mediterranean Region", "European Region", "Region of the Americas",
+                "South-East Asia Region", "Western Pacific Region")
+
+four_world <- c("Africa", "America", "Asia", "Europe")
+
+sdi_group <- c("Low SDI", "Low-middle SDI", "Middle SDI", "High-middle SDI", "High SDI")
+
+# Classify locations
+location_classification <- cod %>%
+  distinct(location_id, location_name) %>%
+  mutate(
+    location_type = case_when(
+      location_name %in% health_system ~ "Health System",
+      location_name %in% wb_region ~ "World Bank Region",
+      location_name %in% who_region ~ "WHO Region",
+      location_name %in% four_world ~ "World Region (4)",
+      location_name %in% sdi_group ~ "SDI Group",
+      TRUE ~ "Country"
+    )
+  )
+
+```
+
+
+```{r}
+glimpse(cod)
+```
+
+```{r}
+# Fetch the data
+population <- read.csv("https://ourworldindata.org/grapher/population.csv?v=1&csvType=full&useColumnShortNames=true")
+
+# Fetch the metadata
+metadata3 <- fromJSON("https://ourworldindata.org/grapher/population.metadata.json?v=1&csvType=full&useColumnShortNames=true")
+```
+
+```{r}
+rsconnect::setAccountInfo(name='jtes1610',
+                          token='884D8A055B4321794124C12FFBEC5D2B',
+                          secret='UEktXED7kJq/gdUhkgi+QHpQg23N9X4eQ7fg6q34')
+```
+
+```{r}
+rsconnect::deployApp(appDir = "app", appName = "child-pneumonia-article")
 ```
 
