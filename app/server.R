@@ -79,7 +79,7 @@ function(input, output, session) {
             colorbar = list(title = "PCV Coverage (%)"))
   })
   
-  # --- Draft 2 Visuals (Updated) ---
+  # --- Draft 2 Visuals (Updated) ----------------------------------------------------------------------
   
   output$top10_bar_d2 <- renderPlotly({
     plot_ly(top_causes,
@@ -94,16 +94,17 @@ function(input, output, session) {
         title = list(text = "Top 10 Causes of Death in Children of Ages 5 and Under (1980)", x = 0.05),
         xaxis = list(title = "Number of Deaths", tickformat = ",.0f"),
         yaxis = list(title = "", automargin = TRUE),
-        margin = list(l = 160),
+        margin = list(l = 100),
         hovermode = "closest"
       ) %>%
       config(
-        displayModeBar = TRUE,
+        #displayModeBar = FALSE,
+        #displayModeBarOnHover = TRUE,
         displaylogo = FALSE,
         modeBarButtonsToRemove = c(
           "zoom2d", "pan2d", "select2d", "lasso2d",
           "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d",
-          "hoverCompareCartesian", "hoverClosestCartesian"
+          "hoverCompareCartesian", "hoverClosestCartesian","toImage"
         )
       )
   })
@@ -115,26 +116,44 @@ function(input, output, session) {
       filter(Year == max(Year)) %>%
       ungroup()
     
-    plot_ly(pcv_latest,
-            type = "choropleth",
-            locations = ~Entity,
-            locationmode = "country names",
-            z = ~PCV,
-            colorscale = "Blues",
-            reversescale = TRUE,
-            hovertemplate = "<b>%{location}</b><br>Vaccination coverage: %{z:.1f}%<extra></extra>",
-            colorbar = list(title = "PCV Coverage (%)")) %>%
+    plot_ly(
+      pcv_latest,
+      type = "choropleth",
+      locations = ~Entity,
+      locationmode = "country names",
+      z = ~PCV,
+      colorscale = "Blues",
+      reversescale = TRUE,
+      hovertemplate = "<b>%{location}</b><br>Vaccination coverage: %{z:.1f}%<extra></extra>",
+      colorbar = list(
+        title = "PCV Coverage (%)",
+        orientation = "h",
+        x = 0.5,
+        y = 0.01,              # set near zero, but avoid clipping
+        xanchor = "center",
+        len = 0.75
+      )
+    ) %>%
       layout(
-        title = list(text = "Latest Pneumococcal Vaccine (PCV) Coverage by Country", x = 0.05)
+        title = list(
+          text = "Latest Pneumococcal Vaccine (PCV) Coverage by Country",
+          x = 0.05,
+          y = 0.95,             # pull title down slightly
+          font = list(size = 16)  # smaller title font reduces padding
+        ),
+        margin = list(t = 10, b = 30, l = 0, r = 0),
+        height = 500
       ) %>%
       config(
-        displayModeBar = TRUE,
         displaylogo = FALSE,
-        modeBarButtonsToRemove = c("pan2d", "select2d", "lasso2d"),
-        showTips = FALSE,
-        displayModeBarOnHover = TRUE
+        displayModeBarOnHover = TRUE,
+        modeBarButtonsToRemove = c("pan2d", "select2d", "lasso2d", "toImage","hoverClosestCartesian"),
+        showTips = FALSE
       )
   })
+  
+  
+  
   
   output$global_trend_d2 <- renderPlotly({
     metric_col <- if (input$sdi_metric == "Rate") "Rate" else "Number"
@@ -173,18 +192,31 @@ function(input, output, session) {
             },
             hoverinfo = 'text+x') %>%
       layout(
-        title = list(text = paste("Pneumonia", input$sdi_metric, "by SDI Group"), x = 0.05),
+        title = list(
+          text = paste("Pneumonia", input$sdi_metric, "by SDI Group"),
+          x = 0.05,
+          font = list(size = 16)
+        ),
         xaxis = list(title = "Year", tickvals = seq(1980, 2021, 5)),
         yaxis = list(title = if (input$sdi_metric == "Rate") "Death Rate (%)" else "Number of Deaths"),
+        margin = list(t = 60, b = 140),
+        height = 600,
         hovermode = "closest",
-        legend = list(x = 1.05, y = 1)
-      ) %>%
+        legend = list(
+          orientation = "h",
+          x = 0.5,
+          y = -0.25,
+          xanchor = "center",
+          yanchor = "top"
+        )
+      )%>%
       config(
-        displayModeBar = TRUE,
+        ##displayModeBar = FALSE,
+        displayModeBarOnHover = TRUE,
         displaylogo = FALSE,
         modeBarButtonsToRemove = c(
           "zoom2d", "pan2d", "select2d", "lasso2d",
-          "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d"
+          "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d","toImage"
         )
       )
   })
@@ -221,14 +253,17 @@ function(input, output, session) {
         title = list(text = "Pneumonia Mortality Across WHO Regions: 1980 vs 2021", x = 0.05),
         yaxis = list(title = if (input$who_metric == "Rate") "Death Rate (%)" else "Number of Deaths"),
         xaxis = list(title = "WHO Region"),
-        hovermode = "closest"
+        margin = list(t = 100),
+        hovermode = "closest",
+        height = 550
       ) %>%
       config(
-        displayModeBar = TRUE,
+        #displayModeBar = FALSE,
+        #displayModeBarOnHover = TRUE,
         displaylogo = FALSE,
         modeBarButtonsToRemove = c(
           "zoom2d", "pan2d", "select2d", "lasso2d",
-          "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d"
+          "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d","toImage"
         )
       )
   })

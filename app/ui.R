@@ -94,6 +94,10 @@ ui <- navbarPage(
                tags$strong("SDI Group"),
                tags$span(icon("info-circle"), id = "sdi_info")
              ),
+             br(),  # ← add one or two of these
+             br(),
+             br(),  # ← add one or two of these
+             br(),
              fluidRow(
                column(4, radioButtons("sdi_metric", "Metric:", choices = c("Rate", "Number"), inline = TRUE)),
                column(4, sliderInput("year_range", "Year Range:", min = 1980, max = 2021, value = c(1980, 2021), step = 1, sep = "")),

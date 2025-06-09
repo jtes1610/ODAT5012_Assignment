@@ -1,8 +1,7 @@
 ### global.R
 
-# Load libraries
+# Load required libraries
 library(shiny)
-library(shinyBS)
 library(tidyverse)
 library(plotly)
 library(readr)
@@ -46,7 +45,7 @@ top_causes <- tibble::tibble(
   )
 )
 
-# Add custom CSS for layout and spacing
+# Add custom styling to match The Conversation aesthetic and fix Plotly toolbar overlap
 add_custom_style <- tags$head(
   tags$style(HTML("
     body {
@@ -77,12 +76,16 @@ add_custom_style <- tags$head(
     }
 
     .plotly {
-      margin-top: 40px;
-      margin-bottom: 40px;
+      margin-top: 80px;
+      margin-bottom: 60px;
+      position: relative;
     }
 
-    .modebar {
-      top: 50px !important;
+    .modebar-container {
+      position: absolute !important;
+      top: -50px !important;
+      right: 0 !important;
+      z-index: 10;
     }
   "))
 )
