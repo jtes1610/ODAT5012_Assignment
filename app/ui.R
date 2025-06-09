@@ -70,8 +70,16 @@ ui <- navbarPage(
   
   # --- Draft 2 ---
   tabPanel("Draft 2",
-           fluidPage(add_custom_style,
+           fluidPage(
+             
+             add_custom_style,
              titlePanel("Draft 2 - Updated Based on User Feedback"),
+             tags$img(
+               src = "header_image.png",
+               style = "width: 80%; display: block; margin: 0 auto 20px;"
+             ),
+             p("Authors: Daniel Fry (), Matilda Marriott(),", tags$br(),
+               "James Tesoriero (310247934), William Gore (541024079)"),
              
              h3("A World of Bad News — But Quiet Progress"),
              p("If the only source of information about the world were news media, one would be forgiven for feeling as though global suffering is on a smooth upwards trend with war, poverty, natural disasters and sickness spiralling out of control. While it is certainly true that some issues in the world are worsening and will need high-level global collaboration to solve, there are many positive stories and trends that do not often make news media headlines."),
@@ -95,9 +103,9 @@ ui <- navbarPage(
                tags$span(icon("info-circle"), id = "sdi_info")
              ),
              br(),  # ← add one or two of these
-             br(),
              br(),  # ← add one or two of these
-             br(),
+             br(),  # ← add one or two of these
+             br(),  # ← add one or two of these
              fluidRow(
                column(4, radioButtons("sdi_metric", "Metric:", choices = c("Rate", "Number"), inline = TRUE)),
                column(4, sliderInput("year_range", "Year Range:", min = 1980, max = 2021, value = c(1980, 2021), step = 1, sep = "")),

@@ -199,15 +199,15 @@ function(input, output, session) {
         ),
         xaxis = list(title = "Year", tickvals = seq(1980, 2021, 5)),
         yaxis = list(title = if (input$sdi_metric == "Rate") "Death Rate (%)" else "Number of Deaths"),
-        margin = list(t = 60, b = 140),
+        margin = list(t = 120, b = 60),
         height = 600,
         hovermode = "closest",
         legend = list(
           orientation = "h",
           x = 0.5,
-          y = -0.25,
+          y = 0.95,             # between title and plot
           xanchor = "center",
-          yanchor = "top"
+          yanchor = "bottom"
         )
       )%>%
       config(
