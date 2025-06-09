@@ -5,6 +5,6 @@ account: jtes1610
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14865890
-bundleId: 10393196
+bundleId: 10396561
 url: https://jtes1610.shinyapps.io/child-pneumonia-article/
 version: 1
