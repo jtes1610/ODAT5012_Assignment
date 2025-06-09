@@ -1,6 +1,8 @@
 ### global.R
 
+# Load libraries
 library(shiny)
+library(shinyBS)
 library(tidyverse)
 library(plotly)
 library(readr)
@@ -42,4 +44,45 @@ top_causes <- tibble::tibble(
     379039, 
     303686
   )
+)
+
+# Add custom CSS for layout and spacing
+add_custom_style <- tags$head(
+  tags$style(HTML("
+    body {
+      font-family: 'Georgia', serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #333;
+      background-color: #fff;
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h3 {
+      font-size: 26px;
+      font-weight: bold;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #111;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    ul {
+      margin-bottom: 20px;
+    }
+
+    .plotly {
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .modebar {
+      top: 50px !important;
+    }
+  "))
 )
