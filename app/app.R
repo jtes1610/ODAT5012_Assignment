@@ -1,2 +1,5 @@
 source("global.R")
-shinyApp(ui = source("ui.R")$value, server = source("server.R")$value)
+source("ui.R")
+source("server.R")
+
+shinyApp(ui = ui, server = server)

@@ -173,39 +173,8 @@ rsconnect::setAccountInfo(name='jtes1610',
 rsconnect::deployApp(appDir = "app", appName = "child-pneumonia-article")
 ```
 ```{r}
-library(jsonlite)
-
-# Fetch the data
-gdp_percap <- read.csv("https://ourworldindata.org/grapher/gdp-per-capita-worldbank.csv?v=1&csvType=full&useColumnShortNames=true")
-
-
-```
-
-
-```{r}
-library(tidyverse)
-library(plotly)
-library(readr)
-
-# Load your data
-cp <- read_csv("data/cp_wide_classified.csv")
-
-# Filter and plot
-sdi_data <- cp %>%
-  filter(sex == "Both", location_type == "SDI Group", !is.na(Rate)) %>%
-  mutate(Rate = Rate / 1000)
-
-# Check if anything is returned
-print(unique(sdi_data$location_type))
-print(table(sdi_data$location))
-
-# Generate plot
-plot_ly(sdi_data, x = ~year, y = ~Rate, color = ~location, type = 'scatter', mode = 'lines') %>%
-  layout(
-    title = list(text = "Pneumonia Mortality by SDI Group"),
-    yaxis = list(title = "Death Rate (%)"),
-    xaxis = list(title = "Year")
-  )
+list.files("app/ui")
+list.files("app/server")
 ```
 
 
