@@ -6,6 +6,7 @@ library(tidyverse)
 library(plotly)
 library(readr)
 library(leaflet)
+library(tidyr)
 
 # Load child pneumonia dataset
 cp <- read_csv("data/cp_wide_classified.csv")
