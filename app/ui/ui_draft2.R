@@ -21,17 +21,36 @@ ui_draft2 <-tabPanel("Draft 2", fluidPage(
   h3("Pneumonia: A Disease of Inequality"),
   p("Throughout history, a leading cause of child mortality has been Pneumonia, with 2.5 million children dying before the age of 5 from this disease in 1980, more than from any other cause. Pneumonia often develops alongside other infections, and is related to a range of conditions that are largely preventable. These conditions tend to have a larger impact on the health of young children, who are less resilient to infection. While pneumonia cases are present in every nation, the greatest impact in terms of mortality is felt in low to middle SDI nations. Some of the conditions which tend to be predictive of higher incidence of pneumonia are; undernutrition, air pollution, poor access to clean water and sanitation as well as a lack of access to appropriate vaccines, all conditions that are associated with lower levels of national development."),
   plotlyOutput("top10_bar_d2"),
+  tags$div(style="background-color:#f0f0f0; padding:10px; margin-bottom:20px; border-left:4px solid #ccc;",
+           tags$strong("User Feedback:"),
+           tags$ul(
+             tags$li("Clear and easy to interpret."),
+             tags$li("No changes needed."),
+             tags$li("Easily able to read the numbers using the hover feature.")
+           )
+  ),
   p("When these conditions are combined with other development related factors such as low or missing healthcare infrastructure and access, the result can be high death rates due to largely preventable diseases like pneumonia. In many low income countries, the persistence of the associated risk factors is ultimately a byproduct of poverty and underfunded health systems. In contrast, high income nations with robust healthcare, widespread immunisation programs, and safer living environments see significantly less deaths due to pneumonia in absolute terms, but are still not able to completely eradicate it as a top cause of child mortality."),
   
   h3("A Catalyst for Decline"),
   p("In recent decades, there has been a downward trend in pneumonia deaths among children worldwide. This is not the result of any single breakthrough, but rather the outcome of decades of development that have improved living conditions and healthcare access around the world. Rising GDP in many low and middle income countries has led to better nutrition, safer sanitation, and increased access to healthcare, all of which have contributed to this change. In tandem, improvements in rural healthcare delivery, including the expansion of community health worker programs, have brought timely diagnosis and treatment to previously underserved populations."),
   p("One major catalyst for the reduction of pneumonia caused deaths, however, is the remarkable global collaborations that strove and continue to strive to expand global immunisation programs. Since the year 2000, access to pneumococcal conjugate vaccines (PCV) around the world has been expanded substantially, with the organisation Gavi immunizing over 1 billion children against pneumonia alone. In combination with substantial progress in other measures of development, this additional factor has contributed to further accelerate the decline of pneumonia-associated child mortality."),
   plotlyOutput("pcv_coverage_d2"),
+  tags$div(style="background-color:#f0f0f0; padding:10px; margin-bottom:20px; border-left:4px solid #ccc;",
+           tags$strong("User Feedback:"),
+           tags$ul(
+             tags$li("Easy to distinguish coverage levels."),
+             tags$li("Add a help tooltip or legend to explain light grey and white areas."),
+             tags$li("Able to zoom, move around, and find countries without issue."),
+             tags$li("Reset map feature was intuitive and worked as expected.")
+           )
+  ),
   
   h3("A Promising Trend"),
   p("With all of the developmental changes that have eventuated since the 1980s, combined with the arrival of new vaccines and global efforts to distribute them, the pneumonia-associated child mortality rate worldwide has been plummeting. Within a single lifetime, nations classified as low SDI have experienced a dramatic and still accelerating decline in child mortality due to pneumonia. Where in 1980, nearly one in every 100 children would die of pneumonia in low SDI nations, that number is now down to between 1 and 2 in every thousand. In low-middle SDI nations, where 6 in every 1000 children were dying of pneumonia in 1980, that number has fallen to less than 1 in every 1000."),
   plotlyOutput("global_trend_d2"),
-  tags$div(
+  br(),  # ← add one or two of these
+  br(),  # ← add one or two of these
+    tags$div(
     tags$strong("SDI Group"),
     tags$span(icon("info-circle"), id = "sdi_info")
   ),
@@ -45,6 +64,19 @@ ui_draft2 <-tabPanel("Draft 2", fluidPage(
     column(4, actionButton("reset_years", "Reset Chart", icon = icon("undo")))
   ),
   textOutput("selected_range_text"),
+  
+  br(),
+  tags$div(style="background-color:#f0f0f0; padding:10px; margin-bottom:20px; border-left:4px solid #ccc;",
+           tags$strong("User Feedback:"),
+           tags$ul(
+             tags$li("Make UI elements clearer."),
+             tags$li("Move the hover feature to a more intuitive location."),
+             tags$li("Able to use both local and multiple hover options."),
+             tags$li("Needed assistance to use legend filter for SDI groups."),
+             tags$li("The blue colour scheme was too close in colour"),
+             tags$li("Reset feature and year slider were not required as this was already within Plotly")
+           )
+  ),
   p("While the pneumonia associated child mortality rate was not as high in 1980 in middle SDI nations, there have also been similarly remarkable declines in deaths due to pneumonia in these countries. In middle SDI countries, which in many cases are still considered to be developing nations, this number is now as low as 3 deaths in every 10,000 children."),
   
   h3("A Global Success Story"),
@@ -53,6 +85,14 @@ ui_draft2 <-tabPanel("Draft 2", fluidPage(
   p("In these three regions alone, two thousand less children are dying of pneumonia every day than in 1980."),
   plotlyOutput("regional_rates_d2"),
   radioButtons("who_metric", "Metric:", choices = c("Rate", "Number"), inline = TRUE),
+  tags$div(style="background-color:#f0f0f0; padding:10px; margin-bottom:20px; border-left:4px solid #ccc;",
+           tags$strong("User Feedback:"),
+           tags$ul(
+             tags$li("Understood the comparison."),
+             tags$li("Improve UI element placement for better usability."),
+             tags$li("Compare on hover feature was hard to discover and required prompting.")
+           )
+  ),
   
   h3("Where to Next?"),
   p("Pneumonia remains the single largest infectious cause of death in children worldwide. But we know what works. Vaccination, better nutrition, stronger health systems—these tools are proven."),

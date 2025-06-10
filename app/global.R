@@ -1,4 +1,4 @@
-### global.R
+# global.R
 
 # Load required libraries
 library(shiny)
@@ -7,12 +7,15 @@ library(plotly)
 library(readr)
 library(leaflet)
 library(tidyr)
+library(bsplus)   # for bs_embed_tooltip()
 
 # Load child pneumonia dataset
 cp <- read_csv("data/cp_wide_classified.csv")
 
 # Load and rename PCV vaccine coverage columns
-pcv <- read_csv("https://ourworldindata.org/grapher/diphtheria-tetanus-pertussis-vaccine-vs-pneumococcal-vaccine-coverage.csv?v=1&csvType=full&useColumnShortNames=true") %>%
+pcv <- read_csv(
+  "https://ourworldindata.org/grapher/diphtheria-tetanus-pertussis-vaccine-vs-pneumococcal-vaccine-coverage.csv?v=1&csvType=full&useColumnShortNames=true"
+) %>%
   rename(
     PCV = coverage__antigen_pcv3,
     DTP = coverage__antigen_dtpcv3
@@ -46,7 +49,7 @@ top_causes <- tibble::tibble(
   )
 )
 
-# Add custom styling to match The Conversation aesthetic and fix Plotly toolbar overlap
+# Custom CSS
 add_custom_style <- tags$head(
   tags$style(HTML("
     body {
@@ -68,25 +71,40 @@ add_custom_style <- tags$head(
       color: #111;
     }
 
-    p {
+    p, ul {
       margin-bottom: 20px;
     }
 
-    ul {
-      margin-bottom: 20px;
-    }
-
+    /* bring the chart up so the modebar sits inside */
     .plotly {
-      margin-top: 80px;
+      margin-top: 20px !important;
       margin-bottom: 60px;
       position: relative;
     }
 
-    .modebar-container {
+    /* position the toolbar at the very top of the plot */
+    .plotly .modebar-container {
       position: absolute !important;
-      top: -50px !important;
-      right: 0 !important;
+      top: 0px         !important;
+      right: 0px       !important;
       z-index: 10;
+    }
+
+    /* light background for contrast */
+    .modebar {
+      background-color: rgba(255,255,255,0.9) !important;
+    }
+
+    /* red icons */
+    .modebar-btn path {
+      stroke: #FF0000 !important;
+      fill:   #FF0000 !important;
+    }
+
+    /* darker red on hover */
+    .modebar-btn:hover path {
+      stroke: #CC0000 !important;
+      fill:   #CC0000 !important;
     }
   "))
 )

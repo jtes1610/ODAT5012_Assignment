@@ -82,74 +82,81 @@ server_final <- function(input, output, session) {
       config(
         displaylogo = FALSE,
         displayModeBarOnHover = TRUE,
-        modeBarButtonsToRemove = c("pan2d", "select2d", "lasso2d", "toImage", "hoverClosestCartesian"),
+        modeBarButtonsToRemove = c("pan2d", "select2d", "lasso2d", "toImage", "hoverCompareCartesian", "hoverClosestCartesian"),
         showTips = FALSE
       )
   })
   
   output$global_trend_d3 <- renderPlotly({
     metric_col <- if (input$sdi_metric_d3 == "Rate") "Rate" else "Number"
-    legend_order <- c("High SDI", "High-middle SDI", "Middle SDI", "Low-middle SDI", "Low SDI")
+    legend_order <- c("High SDI","High-middle SDI","Middle SDI","Low-middle SDI","Low SDI")
     sdi_colours <- list(
-      "High SDI" = "#08306b",
-      "High-middle SDI" = "#2171b5",
-      "Middle SDI" = "#6baed6",
-      "Low-middle SDI" = "#9ecae1",
-      "Low SDI" = "#c6dbef"
+      "High SDI"        = "#041D62",  # very dark navy
+      "High-middle SDI" = "#1E376F",
+      "Middle SDI"      = "#3C78B8",
+      "Low-middle SDI"  = "#7BA3D6",
+      "Low SDI"         = "#BDD3EF"   # very pale sky blue
     )
     
     data <- cp %>%
-      filter(sex %in% c("Male", "Female"),
-             location_type == "SDI Group",
-             location %in% legend_order,
-             year >= input$year_range_d3[1],
-             year <= input$year_range_d3[2],
-             !is.na(.data[[metric_col]])) %>%
+      filter(
+        sex == "Male" | sex == "Female",
+        location_type == "SDI Group",
+        location %in% legend_order,
+        year >= 1980,    # fixed start
+        year <= 2021,    # fixed end
+        !is.na(.data[[metric_col]])
+      ) %>%
       group_by(location, year) %>%
       summarise(value = mean(.data[[metric_col]], na.rm = TRUE), .groups = "drop") %>%
-      mutate(value = if (input$sdi_metric_d3 == "Rate") value / 1000 else value,
-             location = factor(location, levels = legend_order))
+      mutate(
+        value = if (input$sdi_metric_d3 == "Rate") value / 1000 else value,
+        location = factor(location, levels = legend_order)
+      )
     
-    plot_ly(data,
-            x = ~year,
-            y = ~value,
-            color = ~location,
-            type = 'scatter',
-            mode = 'lines',
-            colors = unname(unlist(sdi_colours)),
-            text = ~paste0("<b>", location, "</b><br>",
-                           if (input$sdi_metric_d3 == "Rate") {
-                             paste0("Rate: ", round(value, 4), "%")
-                           } else {
-                             paste0("Deaths: ", scales::comma(round(value)))
-                           }),
-            hoverinfo = 'text') %>%
+    plot_ly(
+      data, x = ~year, y = ~value, color = ~location,
+      type = 'scatter', mode = 'lines',
+      colors = unname(unlist(sdi_colours)),
+      text = ~paste0(
+        "<b>", location, "</b><br>",
+        if (input$sdi_metric_d3 == "Rate") {
+          paste0("Rate: ", round(value, 4), "%")
+        } else {
+          paste0("Deaths: ", scales::comma(round(value)))
+        }
+      ),
+      hoverinfo = 'text'
+    ) %>%
       layout(
         title = list(
           text = paste("Pneumonia", input$sdi_metric_d3, "by SDI Group"),
-          x = 0.05,
-          font = list(size = 16)
+          x = 0.05
         ),
         xaxis = list(title = "Year", tickvals = seq(1980, 2021, 5)),
-        yaxis = list(title = if (input$sdi_metric_d3 == "Rate") "Death Rate (%)" else "Number of Deaths"),
+        yaxis = list(
+          title = if (input$sdi_metric_d3 == "Rate") "Death Rate (%)"
+          else "Number of Deaths"
+        ),
         margin = list(t = 120, b = 60),
         height = 600,
         hovermode = "closest",
         legend = list(
-          orientation = "h",
-          x = 0.5,
-          y = 0.95,
-          xanchor = "center",
-          yanchor = "bottom"
+          orientation = "h", x = 0.5, y = 0.95,
+          xanchor = "center", yanchor = "bottom"
         )
       ) %>%
       config(
-        displayModeBarOnHover = TRUE,
-        displaylogo = FALSE,
-        modeBarButtonsToRemove = c("zoom2d", "pan2d", "select2d", "lasso2d",
-                                   "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d", "toImage")
+        displayModeBarOnHover = TRUE, displaylogo = FALSE,
+        modeBarButtonsToRemove = c(
+          "zoom2d","pan2d","select2d","lasso2d",
+          "zoomIn2d","zoomOut2d","autoScale2d",
+          "resetScale2d","toImage"
+        )
       )
   })
+  
+  
   
   output$regional_rates_d3 <- renderPlotly({
     metric_col <- if (input$who_metric_d3 == "Rate") "Rate" else "Number"

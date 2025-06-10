@@ -1,6 +1,8 @@
 library(shiny)
 library(shinyBS)
 library(plotly)
+library(shinyhelper)
+library(bsplus)
 
 ui_final <- tabPanel("Article", fluidPage(
   
@@ -32,39 +34,69 @@ ui_final <- tabPanel("Article", fluidPage(
   h3("A Catalyst for Decline"),
   p("In recent decades, there has been a downward trend in pneumonia deaths among children worldwide. This is not the result of any single breakthrough, but rather the outcome of decades of development that have improved living conditions and healthcare access around the world. Rising GDP in many low and middle income countries has led to better nutrition, safer sanitation, and increased access to healthcare, all of which have contributed to this change. In tandem, improvements in rural healthcare delivery, including the expansion of community health worker programs, have brought timely diagnosis and treatment to previously underserved populations."),
   p("One major catalyst for the reduction of pneumonia caused deaths, however, is the remarkable global collaborations that strove and continue to strive to expand global immunisation programs. Since the year 2000, access to pneumococcal conjugate vaccines (PCV) around the world has been expanded substantially, with the organisation Gavi immunizing over 1 billion children against pneumonia alone. In combination with substantial progress in other measures of development, this additional factor has contributed to further accelerate the decline of pneumonia-associated child mortality."),
-  plotlyOutput("pcv_coverage_d3"),
-  div(
-    style = "margin-top: 10px; background-color: #f5f5f5; border: 1px solid #ccc; padding: 10px;",
-    tags$p(
-      style = "font-size: 14px; font-style: italic; color: #000;",
-      "Note: Countries shown in white have no available data for PCV coverage."
+  # wrap the map in a relative container so we can absolutely position the icon
+  tags$div(
+    style = "position: relative;",
+    
+    # your map
+    plotlyOutput("pcv_coverage_d3"),
+    
+    # hover-info icon, absolutely positioned next to the colourbar
+    tags$div(
+      style = "
+      position: absolute;
+      /* tweak these so the icon sits just to the right of your colourbar */
+      top: 78%;       /* percent down from top of the plot container */
+      left: 86%;      /* percent across from left of the plot container */
+      cursor: help;
+      z-index: 1000;
+    ",
+      icon("question-circle", id = "pcv_note_icon", style = "font-size:18px; color:#FF0000;") %>%
+        bs_embed_tooltip(
+          "Note: Countries shown in white have no available data for PCV coverage.",
+          placement = "left",
+          trigger   = "hover"
+        )
     )
   ),
   
   h3("A Promising Trend"),
   p("With all of the developmental changes that have eventuated since the 1980s, combined with the arrival of new vaccines and global efforts to distribute them, the pneumonia-associated child mortality rate worldwide has been plummeting. Within a single lifetime, nations classified as low SDI have experienced a dramatic and still accelerating decline in child mortality due to pneumonia. Where in 1980, nearly one in every 100 children would die of pneumonia in low SDI nations, that number is now down to between 1 and 2 in every thousand. In low-middle SDI nations, where 6 in every 1000 children were dying of pneumonia in 1980, that number has fallen to less than 1 in every 1000."),
   plotlyOutput("global_trend_d3"),
-  tags$div(
-    style = "margin-top: 10px;",
-    tags$strong("SDI Group"),
-    tags$span(
-      icon("question-circle"),
-      id = "sdi_info_d3",
-      `data-toggle` = "tooltip",
-      title = "SDI = Sociodemographic Index: a measure combining income, education, and fertility",
-      style = "margin-left: 8px; color: #666; cursor: help; z-index: 9999;"
+  br(), br(), br(), br(),
+  fluidRow(
+    column(6,
+           radioButtons(
+             "sdi_metric_d3",
+             "Metric:",
+             choices  = c("Rate", "Number"),
+             selected = "Rate",
+             inline   = TRUE
+           )
+    ),
+    column(6,
+           tags$div(
+             style = "margin-top:20px; display:flex; align-items:center;",
+             
+
+             # tooltip icon
+             icon(
+               name = "question-circle",
+               id   = "sdi_info_d3",
+               style= "margin-left:6px; cursor:help;"
+             ) %>%
+               bs_embed_tooltip(
+                 title     = "SDI = Sociodemographic Index: combines income, education and fertility.",
+                 placement = "right",
+                 trigger   = "hover"
+               )
+           )
     )
   ),
-  tags$script(HTML("$(function () { $('[data-toggle=\"tooltip\"]').tooltip(); });")),
   
-  br(), br(), br(), br(),
   
-  fluidRow(
-    column(4, radioButtons("sdi_metric_d3", "Metric:", choices = c("Rate", "Number"), inline = TRUE)),
-    column(4, sliderInput("year_range_d3", "Year Range:", min = 1980, max = 2021, value = c(1980, 2021), step = 1, sep = "")),
-    column(4, actionButton("reset_years_d3", "Reset Chart", icon = icon("undo")))
-  ),
-  textOutput("selected_range_text_d3"),
+  br(), br(),
+  
   
   p("While the pneumonia associated child mortality rate was not as high in 1980 in middle SDI nations, there have also been similarly remarkable declines in deaths due to pneumonia in these countries. In middle SDI countries, which in many cases are still considered to be developing nations, this number is now as low as 3 deaths in every 10,000 children."),
   
