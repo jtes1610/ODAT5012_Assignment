@@ -1,27 +1,21 @@
-# Load individual draft servers
-source("server/server_draft1.R", local = TRUE)
-source("server/server_draft2.R", local = TRUE)
-source("server/server_final.R", local = TRUE)
+# Load individual draft & write-up servers
+source("server/server_draft1.R",   local = TRUE)
+source("server/server_draft2.R",   local = TRUE)
+source("server/server_final.R",    local = TRUE)
+source("server/server_writeup.R",  local = TRUE)
 
 server <- function(input, output, session) {
-  # Namespaced call to prevent output/input conflicts
-  
-  # DRAFT 1: Isolated with its own ID suffixes
+  # DRAFT 1: uses its own _d1 IDs
   server_draft1(input, output, session)
   
-  # DRAFT 2: Also uses unique IDs (e.g. _d2)
+  # DRAFT 2: uses its own _d2 IDs
   server_draft2(input, output, session)
   
-  # FINAL: Uses _d3 for all inputs/outputs (safe and isolated)
+  # FINAL: uses _d3 IDs
   server_final(input, output, session)
   
-  # NOTE: Any shared elements between versions (e.g. reset buttons, tooltips)
-  # must be suffixed to avoid overwrites. Final elements use *_d3 exclusively.
+  # WRITE-UP: renders tables & write-up tab
+  server_writeup(input, output, session)
   
-  # Do not define shared elements like this anymore:
-  # output$selected_range_text <- renderText({ ... })
-  # observeEvent(input$reset_years, { ... })
-  # These are now handled in the appropriate *_d1, *_d2, *_d3 functions.
-  
-  message(">> All draft servers loaded successfully")
+  message(">> All servers (draft1, draft2, final & writeup) loaded successfully")
 }

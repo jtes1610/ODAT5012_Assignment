@@ -21,7 +21,8 @@ server_final <- function(input, output, session) {
             hoverinfo = 'text',
             marker = list(color = 'rgba(0, 70, 140, 0.8)')) %>%
       layout(
-        title = list(text = "Top 10 Causes of Death in Children of Ages 5 and Under (1980)", x = 0.05),
+        title = list(text = "Top 10 Causes of Death in Children of Ages 5 and Under (1980)",
+                     x = 0.5, xanchor = "center"),
         xaxis = list(title = "Number of Deaths", tickformat = ",.0f"),
         yaxis = list(title = "", automargin = TRUE),
         margin = list(l = 100),
@@ -69,13 +70,14 @@ server_final <- function(input, output, session) {
         len = 0.75
       )
     ) %>%
-      layout(
-        title = list(
-          text = "Latest Pneumococcal Vaccine (PCV) Coverage by Country",
-          x = 0.05,
-          y = 0.95,
-          font = list(size = 16)
-        ),
+          layout(
+              title = list(
+                  text    = "Latest Pneumococcal Vaccine (PCV) Coverage by Country",
+                   x       = 0.5,
+                  xanchor = "center",
+                  y       = 0.95,
+                  font    = list(size = 16)
+                ),
         margin = list(t = 10, b = 30, l = 0, r = 0),
         height = 500
       ) %>%
@@ -128,12 +130,12 @@ server_final <- function(input, output, session) {
       ),
       hoverinfo = 'text'
     ) %>%
-      layout(
-        title = list(
-          text = paste("Pneumonia Mortality by SDI Group -",
-                       input$sdi_metric_d3),
-          x = 0.05
-        ),
+          layout(
+              title = list(
+                  text    = paste("Pneumonia Mortality by SDI Group –", input$sdi_metric_d3),
+                  x       = 0.5,
+                  xanchor = "center"
+                ),
         xaxis = list(title = "Year", tickvals = seq(1980, 2021, 5)),
         yaxis = list(
           title = if (input$sdi_metric_d3 == "Rate") "Mortality Rate (%)"
@@ -208,8 +210,10 @@ server_final <- function(input, output, session) {
         "<extra></extra>"
       )
     ) %>%
-      layout(
-        title = list(text = title_text, x = 0.05),
+          layout(
+              title = list(text    = title_text,
+                                               x       = 0.5,
+                                               xanchor = "center"),
         xaxis = list(title = "WHO Region"),
         yaxis = list(
           title = if (input$who_metric_d3 == "Rate") "Mortality Rate (%)"

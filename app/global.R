@@ -8,6 +8,7 @@ library(readr)
 library(leaflet)
 library(tidyr)
 library(bsplus)   # for bs_embed_tooltip()
+library(DiagrammeR)
 
 # Load child pneumonia dataset
 cp <- read_csv("data/cp_wide_classified.csv")
