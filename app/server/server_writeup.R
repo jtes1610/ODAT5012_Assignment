@@ -3,49 +3,7 @@ library(shiny)
 library(DiagrammeR)
 
 server_writeup <- function(input, output, session) {
-  
-  output$plan_diagram <- renderGrViz({
-    grViz("
-    digraph timeline {
-      graph [
-        rankdir   = LR
-        splines   = orthogonal
-        nodesep   = 1.0
-        ranksep   = 1.0
-        ratio     = fill        // let it stretch vertically
-        // size    = \"6,3\"    // or use size to force a width x height in inches
-      ]
-      node [
-        shape     = box
-        style     = filled
-        fontname  = Helvetica
-        fontsize  = 14
-        margin    = 0.3
-      ]
-      subgraph cluster_r1 {
-        label='Testing Round 1'; style=filled; fillcolor=lightblue; color=transparent
-        Heur [label='Heuristic Evaluation']
-        UT1  [label='User Testing\nRound 1']
-        Req1 [label='Requirements\nRefinement']
-      }
-      subgraph cluster_r2 {
-        label=''; style=filled; fillcolor=lightgreen; color=transparent
-        Dev2 [label='Development of\nRelease 2']
-      }
-      subgraph cluster_r3 {
-        label='Testing Round 2'; style=filled; fillcolor=lightblue; color=transparent
-        UT2  [label='User Testing\nRound 2']
-        Req2 [label='Requirements\nRefinement']
-      }
-      subgraph cluster_r4 {
-        label=''; style=filled; fillcolor=lightgreen; color=transparent
-        DevF [label='Development of\nFinal Version']
-      }
-      Heur -> UT1 -> Req1 -> Dev2 -> UT2 -> Req2 -> DevF
-    }
-  ")
-  })
-  
+
   
   # Round 1: Users Tested & their Description
   output$round1_users <- renderTable({
@@ -71,6 +29,7 @@ server_writeup <- function(input, output, session) {
           "before reading everything and taking it in."
         )
       ),
+      check.names = FALSE,
       stringsAsFactors = FALSE
     )
   }, striped = TRUE, hover = TRUE)
@@ -115,6 +74,7 @@ server_writeup <- function(input, output, session) {
       ),
       Priority = c("High", "High", "Low", "High", "Medium", "Medium", "Low", "Medium"),
       `Include in final design?` = rep("Yes", 8),
+      check.names = FALSE,
       stringsAsFactors = FALSE
     )
   }, striped = TRUE, hover = TRUE)
@@ -135,6 +95,7 @@ server_writeup <- function(input, output, session) {
         "Julian has data knowledge but doesn’t often generate or use plots in daily work.",
         "Nik has limited knowledge of interacting with data."
       ),
+      check.names = FALSE,
       stringsAsFactors = FALSE
     )
   }, striped = TRUE, hover = TRUE)
@@ -160,6 +121,7 @@ server_writeup <- function(input, output, session) {
       ),
       Priority = c("Medium", "High", "Low", "High", "Low", "Medium"),
       `Include in final design?` = c("Yes", "Yes", "No", "Yes", "Yes", "Yes"),
+      check.names = FALSE,
       stringsAsFactors = FALSE
     )
   }, striped = TRUE, hover = TRUE)
