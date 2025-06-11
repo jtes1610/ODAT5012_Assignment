@@ -130,17 +130,18 @@ server_final <- function(input, output, session) {
     ) %>%
       layout(
         title = list(
-          text = paste("Pneumonia", input$sdi_metric_d3, "by SDI Group"),
+          text = paste("Pneumonia Mortality by SDI Group -",
+                       input$sdi_metric_d3),
           x = 0.05
         ),
         xaxis = list(title = "Year", tickvals = seq(1980, 2021, 5)),
         yaxis = list(
-          title = if (input$sdi_metric_d3 == "Rate") "Death Rate (%)"
+          title = if (input$sdi_metric_d3 == "Rate") "Mortality Rate (%)"
           else "Number of Deaths"
         ),
         margin = list(t = 120, b = 60),
         height = 600,
-        hovermode = "closest",
+        hovermode = "x",
         legend = list(
           orientation = "h", x = 0.5, y = 0.95,
           xanchor = "center", yanchor = "bottom"
@@ -159,48 +160,80 @@ server_final <- function(input, output, session) {
   
   
   output$regional_rates_d3 <- renderPlotly({
+    # Decide which column to use
     metric_col <- if (input$who_metric_d3 == "Rate") "Rate" else "Number"
     
-    data <- cp %>%
-      filter(sex %in% c("Male", "Female"),
-             location_type == "WHO Region",
-             year %in% c(1980, 2021),
-             !is.na(.data[[metric_col]])) %>%
-      group_by(location, year) %>%
-      summarise(value = mean(.data[[metric_col]], na.rm = TRUE), .groups = "drop") %>%
-      mutate(value = if (input$who_metric_d3 == "Rate") value / 1000 else value)
+    # Dynamic title
+    title_text <- paste(
+      "Pneumonia Mortality Across WHO Regions –",
+      input$who_metric_d3
+    )
     
-    plot_ly(data,
-            x = ~location,
-            y = ~value,
-            color = ~as.factor(year),
-            colors = c("1980" = "#9ecae1", "2021" = "#08519c"),
-            type = 'bar',
-            barmode = 'group',
-            hovertemplate = paste(
-              "<b>%{x}</b><br>",
-              "Year: %{customdata}<br>",
-              if (input$who_metric_d3 == "Rate") {
-                "Rate: %{y:.4%}"
-              } else {
-                "Deaths: %{y:,}"
-              },
-              "<extra></extra>"
-            ),
-            customdata = ~year,
-            hoverinfo = 'text') %>%
+    # Prepare data
+    data <- cp %>%
+      filter(
+        sex           %in% c("Male", "Female"),
+        location_type == "WHO Region",
+        year         %in% c(1980, 2021),
+        !is.na(.data[[metric_col]])
+      ) %>%
+      group_by(location, year) %>%
+      summarise(
+        value = mean(.data[[metric_col]], na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      mutate(
+        # convert rate to proportion for percent formatting
+        value = if (input$who_metric_d3 == "Rate") value / 1000 else value
+      )
+    
+    # Plot
+    plot_ly(
+      data,
+      x      = ~location,
+      y      = ~value,
+      color  = ~as.factor(year),
+      colors = c("1980" = "#9ecae1", "2021" = "#08519c"),
+      type   = "bar",
+      barmode = "group",
+      customdata = ~year,
+      hovertemplate = paste0(
+        "<b>%{x}</b><br>",
+        "Year: %{customdata}<br>",
+        if (input$who_metric_d3 == "Rate") {
+          "Rate: %{y:.1%}"
+        } else {
+          "Deaths: %{y:,.0f}"
+        },
+        "<extra></extra>"
+      )
+    ) %>%
       layout(
-        title = list(text = "Pneumonia Mortality Across WHO Regions: 1980 vs 2021", x = 0.05),
-        yaxis = list(title = if (input$who_metric_d3 == "Rate") "Death Rate (%)" else "Number of Deaths"),
+        title = list(text = title_text, x = 0.05),
         xaxis = list(title = "WHO Region"),
-        margin = list(t = 100),
+        yaxis = list(
+          title = if (input$who_metric_d3 == "Rate") "Mortality Rate (%)"
+          else "Number of Deaths"
+        ),
+        margin = list(t = 80, b = 60),
         hovermode = "closest",
-        height = 550
+        height = 550,
+        legend  = list(
+          orientation = "v",    # vertical
+          x           = 1.02,   # just outside the plot area
+          y           = 1,      # top
+          xanchor     = "left", # align left edge of legend at x
+          yanchor     = "top"   # align top of legend at y
+        )
       ) %>%
       config(
-        displaylogo = FALSE,
-        modeBarButtonsToRemove = c("zoom2d", "pan2d", "select2d", "lasso2d",
-                                   "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d", "toImage")
+        displayModeBarOnHover = TRUE,
+        displaylogo           = FALSE,
+        modeBarButtonsToRemove = c(
+          "zoom2d","pan2d","select2d","lasso2d",
+          "zoomIn2d","zoomOut2d","autoScale2d",
+          "resetScale2d","toImage"
+        )
       )
   })
   
